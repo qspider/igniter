@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     }
 
     const applicationSettings = await getApplicationSettings();
-    const addressGroups = await list(false);
+    const addressGroups = await list();
 
     const minimumStake = applicationSettings.minimumStake;
 
