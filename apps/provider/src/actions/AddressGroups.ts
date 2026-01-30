@@ -6,40 +6,55 @@ import type {
     AddressGroupService,
 } from "@igniter/db/provider/schema";
 import { insert, list, remove, simpleList, update } from '@/lib/dal/addressGroups'
-import {getCurrentUserIdentity} from "@/lib/utils/actions";
+import { withRequireOwnerOrAdmin } from '@/lib/utils/actionUtils'
 
-export async function CreateAddressGroup(addressGroup: Omit<InsertAddressGroup, 'createdBy' | 'updatedBy'>, services: Omit<AddressGroupService, 'addressGroupId' | 'service'>[]) {
-  const identity = await getCurrentUserIdentity();
-  return insert(
-    {
-      ...addressGroup,
-      createdBy: identity,
-      updatedBy: identity,
-    },
-    services,
-  );
+export async function CreateAddressGroup(
+  addressGroup: Omit<InsertAddressGroup, 'createdBy' | 'updatedBy'>,
+  services: Omit<AddressGroupService, 'addressGroupId' | 'service'>[]
+) {
+  return withRequireOwnerOrAdmin(async (user) => {
+    return insert(
+      {
+        ...addressGroup,
+        createdBy: user.identity,
+        updatedBy: user.identity,
+      },
+      services,
+    );
+  });
 }
 
-export async function UpdateAddressGroup(id: number, addressGroup: Pick<AddressGroup, 'name' | 'linkedAddresses' | 'private' | 'relayMinerId'>, services: Omit<AddressGroupService, 'addressGroupId' | 'service'>[]) {
-  const identity = await getCurrentUserIdentity();
-  return update(
-    id,
-    {
-      ...addressGroup,
-      updatedBy: identity,
-    },
-    services,
-  );
+export async function UpdateAddressGroup(
+  id: number,
+  addressGroup: Pick<AddressGroup, 'name' | 'linkedAddresses' | 'private' | 'relayMinerId'>,
+  services: Omit<AddressGroupService, 'addressGroupId' | 'service'>[]
+) {
+  return withRequireOwnerOrAdmin(async (user) => {
+    return update(
+      id,
+      {
+        ...addressGroup,
+        updatedBy: user.identity,
+      },
+      services,
+    );
+  });
 }
 
 export async function ListAddressGroups() {
-  return list();
+  return withRequireOwnerOrAdmin(async () => {
+    return list();
+  });
 }
 
 export async function ListBasicAddressGroups() {
-  return simpleList()
+  return withRequireOwnerOrAdmin(async () => {
+    return simpleList();
+  });
 }
 
 export async function DeleteAddressGroup(id: number) {
-  return remove(id);
+  return withRequireOwnerOrAdmin(async () => {
+    return remove(id);
+  });
 }

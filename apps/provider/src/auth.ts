@@ -57,7 +57,7 @@ const authConfigResult = NextAuth({
           }
           return null;
         } catch (error) {
-          console.log(error);
+          console.error('[AUTH] Authorization error:', error);
           return null;
         }
       },
