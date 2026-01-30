@@ -21,12 +21,17 @@ const mainRoutes = [
     icon: OverviewDark,
   },
   {
+    title: "Providers",
+    url: "/app/providers",
+    icon: ProvidersDark,
+  },
+  {
     title: "Transactions",
     url: "/app/transactions",
     icon: ActivityDark,
   },
   {
-    title: "Nodes",
+    title: "Suppliers",
     url: "/app/nodes",
     icon: NodesDark,
   },
